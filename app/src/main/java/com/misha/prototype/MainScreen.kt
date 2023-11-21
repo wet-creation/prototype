@@ -1,6 +1,6 @@
 package com.misha.prototype
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,23 +18,72 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.misha.prototype.ui.BottomBarScreen
 import com.misha.prototype.ui.BottomNavGraph
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(){
     val navController = rememberNavController()
     Scaffold(
+        topBar = {
+            TopBar()
+        },
         bottomBar = {
             BottomBar(navController)
         }
-    ) {
-        BottomNavGraph(navController = navController)
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+
+            BottomNavGraph(navController = navController)
+        }
+
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomBar(navHostController: NavHostController){
+fun TopBar(){
+    TopAppBar(
+
+        title = {
+            Text("Currency Tracker")
+        },
+        actions = {
+            IconButton(
+                onClick = {}
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = "Profile"
+                )
+            }
+        }
+    )
+}
+
+
+@Composable
+fun BottomBar(navHostController: NavHostController) {
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.Search,
@@ -44,11 +93,16 @@ fun BottomBar(navHostController: NavHostController){
     val currentDestination = navBackStackEntry?.destination
     NavigationBar {
         screens.forEach {
-            AddItem(screen = it, currentDestination = currentDestination, navController = navHostController)
+            AddItem(
+                screen = it,
+                currentDestination = currentDestination,
+                navController = navHostController
+            )
         }
     }
 
 }
+
 
 @Composable
 fun RowScope.AddItem(
